@@ -1,13 +1,6 @@
 import mouse
 import time
 
-
-# mouse.click('right')
-
-# for _ in range(100):
-# 	time.sleep(0.2)
-# 	print(mouse.get_position())
-
 stepover = 130
 stepdown = 150
 
@@ -26,9 +19,6 @@ def doit():
 		fill_line(i)
 	mouse.move(x_old, y_old, absolute=True, duration=0.05)
 
-mouse.on_right_click(lambda: doit())
-
-#time.sleep(300)
 on = False
 
 def toggle():
