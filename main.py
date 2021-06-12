@@ -1,5 +1,6 @@
 import mouse
 import time
+import asyncio
 import numpy as np
 
 
@@ -24,7 +25,7 @@ def calibrate():
     global calibration_points
     print('Beginning calibration...')
     calibration_points = []
-    mouse.on_right_click(lambda: register_calibration_point())
+    mouse.on_click(lambda: register_calibration_point())
     while len(calibration_points) < 3:
         try:
             time.sleep(0.25)
@@ -47,28 +48,34 @@ def toggle():
     mouse.unhook_all()
     if on:
         print('Toggling on')
-        mouse.on_right_click(lambda: doit())
+        mouse.on_click(lambda: doit())
     else:
         print('Toggling off')
 
 
 def fill_line(i):
     global stepover, grid_size
-    if i > 0:
-        mouse.double_click('left')
-    for i in range(grid_size[0]):
+    mouse.double_click('left')
+    for i in range(grid_size[0]-1):
         mouse.move(stepover[0], 0, absolute=False, duration=0.05)
         mouse.double_click('left')
 
 
+async def reup():
+    time.sleep(2.0)
+    mouse.on_click(lambda: doit())
+
+
 def doit():
     global stepover, grid_size
+    mouse.unhook_all()
     print('Stash it!')
     x_old, y_old = mouse.get_position()
     for i in range(grid_size[1]):
         mouse.move(x_old, y_old + i * stepover[1], absolute=True, duration=0.05)
         fill_line(i)
     mouse.move(x_old, y_old, absolute=True, duration=0.05)
+    asyncio.run(reup())
 
 
 def setup():
